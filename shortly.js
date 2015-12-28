@@ -23,25 +23,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
 
-app.get('/', 
-function(req, res) {
+app.get('/', function(req, res) {
   res.render('index');
 });
 
-app.get('/create', 
-function(req, res) {
+app.get('/create', function(req, res) {
   res.render('index');
 });
 
-app.get('/links', 
-function(req, res) {
+app.get('/links', function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   });
 });
 
-app.post('/links', 
-function(req, res) {
+app.post('/links', function(req, res) {
   var uri = req.body.url;
 
   if (!util.isValidUrl(uri)) {
@@ -75,8 +71,27 @@ function(req, res) {
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
+app.get('/login', function(req, res) {
+  res.render('login');
+});
 
+app.get('/layout', function(req, res) {
+  res.render('layout');
+});
 
+app.get('/signup', function(req, res) {
+  res.render('signup');
+});
+
+app.post('/login', function(req, res) {
+  var uri = req.body.url;
+
+  if (!util.isValidUrl(uri)) {
+    console.log('Not a valid url: ', uri);
+    return res.send(404);
+  }
+  
+});
 
 /************************************************************/
 // Handle the wildcard route last - if all other routes fail
