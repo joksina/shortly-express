@@ -24,14 +24,14 @@ app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', function(req, res) {
-  res.render('index');
+  res.redirect('/login');
 });
 
 app.get('/create', function(req, res) {
-  res.render('index');
+  res.redirect('/login');
 });
 
-app.get('/links', function(req, res) {
+app.get('/links' , util.checkAuth, function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   });
@@ -90,9 +90,11 @@ app.post('/login', function(req, res){
        res.redirect(301, '/index');
       }else {
         //console.log('wrong password');
-        res.redirect(301, '/login');
+        res.redirect(301, '/');
       }
     });
+  }).catch(function(error){
+    res.redirect(301, '/login');
   });
 
 });
@@ -118,10 +120,10 @@ app.post('/signup', function(req, res) {
     };
 
   hashPassword(password, function(hash){
-    new User({ username: username, hash: hash }).save().then(function() {
+    new User({ username: username, password: hash }).save().then(function() {
       // if(found) {
-        res.send(200);
-        console.log('created!');
+        //console.log('created!');
+        res.redirect(301, '/');
       //}
     });
   });
