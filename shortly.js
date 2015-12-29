@@ -84,29 +84,37 @@ app.get('/login', function(req, res) {
 
 app.post('/login', function(req, res){
 
-    var username = req.body.username;
-    var password = req.body.password;
-    var hash;
+  var username = req.body.username;
+  var password = req.body.password;
+  var hash;
 
   new User({'username': username}).fetch().then(function(user){
     // console.log('user', user);
     hash = user.attributes.password;
     // console.log('hash', hash);
+    if(password === hash){
+      //console.log('found');
+      req.session.user = username;
+      //console.log('session', req.session);
+      res.redirect(301, '/');
+    } else {
+      bcrypt.compare(password, hash, function(err, found){
+        //console.log('password', password);
+        //console.log('hash', hash);
 
-    bcrypt.compare(password, hash, function(err, found){
-      console.log('password', password);
-      console.log('hash', hash);
+        if(found) {
+          //console.log('found');
+          req.session.user = username;
+          //console.log('session', req.session);
+          res.redirect(301, '/index');
+        }else {
+          //console.log('wrong password');
+          res.redirect(301, '/');
+        }
+      });
+      
+    }
 
-      if(found) {
-        console.log('found');
-        req.session.user = username;
-        console.log('session', req.session);
-        res.redirect(301, '/index');
-      }else {
-        console.log('wrong password');
-        res.redirect(301, '/');
-      }
-    });
   }).catch(function(error){
     res.redirect(301, '/login');
   });
