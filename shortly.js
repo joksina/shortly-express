@@ -87,9 +87,10 @@ app.post('/login', function(req, res){
 
     bcrypt.compare(password, hash, function(err, found){
       if(found) {
-        console.log("found");
+       res.redirect(301, '/index');
       }else {
-        console.log('wrong password');
+        //console.log('wrong password');
+        res.redirect(301, '/login');
       }
     });
   });
