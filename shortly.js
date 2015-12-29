@@ -89,26 +89,16 @@ app.post('/login', function(req, res){
   var hash;
 
   new User({'username': username}).fetch().then(function(user){
-    // console.log('user', user);
     hash = user.attributes.password;
-    // console.log('hash', hash);
     if(password === hash){
-      //console.log('found');
       req.session.user = username;
-      //console.log('session', req.session);
       res.redirect(301, '/');
     } else {
       bcrypt.compare(password, hash, function(err, found){
-        //console.log('password', password);
-        //console.log('hash', hash);
-
         if(found) {
-          //console.log('found');
           req.session.user = username;
-          //console.log('session', req.session);
           res.redirect(301, '/index');
         }else {
-          //console.log('wrong password');
           res.redirect(301, '/');
         }
       });
@@ -149,10 +139,7 @@ app.post('/signup', function(req, res) {
 
   hashPassword(password, function(hash){
     new User({ username: username, password: hash }).save().then(function() {
-      // if(found) {
-        //console.log('created!');
-        res.redirect(301, '/');
-      //}
+      res.redirect(301, '/');
     });
   });
 
@@ -184,6 +171,4 @@ app.get('/*', function(req, res) {
 });
 
 console.log('Shortly is listening on 4568');
-app.listen(4568, function(){
-  console.log('listening');
-});
+app.listen(4568);
