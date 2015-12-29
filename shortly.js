@@ -2,7 +2,7 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
-
+var bcrypt = require('bcrypt-nodejs');
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
@@ -39,7 +39,6 @@ app.get('/links', function(req, res) {
 
 app.post('/links', function(req, res) {
   var uri = req.body.url;
-
   if (!util.isValidUrl(uri)) {
     console.log('Not a valid url: ', uri);
     return res.send(404);
@@ -75,6 +74,28 @@ app.get('/login', function(req, res) {
   res.render('login');
 });
 
+app.post('/login', function(req, res){
+
+    var username = req.body.username;
+    var password = req.body.password;
+    var hash;
+
+  new User({'username': username}).fetch().then(function(user){
+    // console.log('user', user);
+    hash = user.attributes.hash;
+      // console.log('hash', user);
+
+    bcrypt.compare(password, hash, function(err, found){
+      if(found) {
+        console.log("found");
+      }else {
+        console.log('wrong password');
+      }
+    });
+  });
+
+});
+
 app.get('/layout', function(req, res) {
   res.render('layout');
 });
@@ -83,14 +104,27 @@ app.get('/signup', function(req, res) {
   res.render('signup');
 });
 
-app.post('/login', function(req, res) {
-  var uri = req.body.url;
+app.post('/signup', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
 
-  if (!util.isValidUrl(uri)) {
-    console.log('Not a valid url: ', uri);
-    return res.send(404);
-  }
-  
+  var hashPassword = function (password, cb) {
+      bcrypt.genSalt(10, function(err, salt) {
+          bcrypt.hash(password, salt, null, function(err, hash) {
+            cb(hash);
+          });
+        });
+    };
+
+  hashPassword(password, function(hash){
+    new User({ username: username, hash: hash }).save().then(function() {
+      // if(found) {
+        res.send(200);
+        console.log('created!');
+      //}
+    });
+  });
+
 });
 
 /************************************************************/

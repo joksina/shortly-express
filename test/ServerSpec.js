@@ -40,10 +40,10 @@ describe('', function() {
       .del()
       .catch(function(error) {
         // uncomment when writing authentication tests
-        // throw {
-        //   type: 'DatabaseError',
-        //   message: 'Failed to create test setup data'
-        // };
+        throw {
+          type: 'DatabaseError',
+          message: 'Failed to create test setup data'
+        };
       });
 
     // delete user Phillip from db so it can be created later for the test
@@ -52,10 +52,10 @@ describe('', function() {
       .del()
       .catch(function(error) {
         // uncomment when writing authentication tests
-        // throw {
-        //   type: 'DatabaseError',
-        //   message: 'Failed to create test setup data'
-        // };
+        throw {
+          type: 'DatabaseError',
+          message: 'Failed to create test setup data'
+        };
       });
   });
 
@@ -161,10 +161,12 @@ describe('', function() {
           title: 'Funny pictures of animals, funny dog pictures',
           base_url: 'http://127.0.0.1:4568'
         });
+        console.log('link', link);
         link.save().then(function(){
           done();
         });
       });
+
 
       it('Returns the same shortened code', function(done) {
         var options = {
@@ -213,7 +215,7 @@ describe('', function() {
 
   }); // 'Link creation'
 
-  describe('Privileged Access:', function(){
+  xdescribe('Privileged Access:', function(){
 
     it('Redirects to login page if a user tries to access the main page and is not signed in', function(done) {
       request('http://127.0.0.1:4568/', function(error, res, body) {
@@ -238,7 +240,7 @@ describe('', function() {
 
   }); // 'Priviledged Access'
 
-  describe('Account Creation:', function(){
+  xdescribe('Account Creation:', function(){
 
     it('Signup creates a user record', function(done) {
       var options = {
@@ -286,7 +288,7 @@ describe('', function() {
 
   }); // 'Account Creation'
 
-  describe('Account Login:', function(){
+  xdescribe('Account Login:', function(){
 
     var requestWithSession = request.defaults({jar: true});
 
