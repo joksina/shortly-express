@@ -34,7 +34,9 @@ h1 {
 .navigation .logout {
   float: right;
 }
-
+.logout {
+  text-align: right;
+}
 .navigation li a , .logout {
   width: 100px;
   height: 20px;

@@ -3,6 +3,7 @@ var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt-nodejs');
+var session = require('express-session');
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
@@ -12,6 +13,8 @@ var Link = require('./app/models/link');
 var Click = require('./app/models/click');
 
 var app = express();
+app.use(session({ secret: 'kitty', cookie: { maxAge: 60000 },resave: false,
+  saveUninitialized: true}));
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -24,11 +27,16 @@ app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', function(req, res) {
-  res.redirect('/login');
+  res.redirect(301, '/login');
+});
+
+
+app.get('/index', function(req, res) {
+  res.render('index');
 });
 
 app.get('/create', function(req, res) {
-  res.redirect('/login');
+  res.redirect(301, '/login');
 });
 
 app.get('/links' , util.checkAuth, function(req, res) {
@@ -82,14 +90,20 @@ app.post('/login', function(req, res){
 
   new User({'username': username}).fetch().then(function(user){
     // console.log('user', user);
-    hash = user.attributes.hash;
-      // console.log('hash', user);
+    hash = user.attributes.password;
+    // console.log('hash', hash);
 
     bcrypt.compare(password, hash, function(err, found){
+      console.log('password', password);
+      console.log('hash', hash);
+
       if(found) {
-       res.redirect(301, '/index');
+        console.log('found');
+        req.session.user = username;
+        console.log('session', req.session);
+        res.redirect(301, '/index');
       }else {
-        //console.log('wrong password');
+        console.log('wrong password');
         res.redirect(301, '/');
       }
     });
@@ -99,8 +113,14 @@ app.post('/login', function(req, res){
 
 });
 
-app.get('/layout', function(req, res) {
-  res.render('layout');
+app.get('/logout', function(req, res) {
+  //res.render('layout');
+  req.session.destroy(function(err){
+    if(err){
+      throw err;
+    }
+  });
+  res.redirect(301, '/login');
 });
 
 app.get('/signup', function(req, res) {
