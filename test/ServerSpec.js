@@ -101,7 +101,7 @@ describe('', function() {
       });
     });
 
-    xdescribe('Shortening links:', function(){
+    describe('Shortening links:', function(){
 
       var options = {
         'method': 'POST',
