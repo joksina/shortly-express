@@ -11,13 +11,13 @@ var User = db.Model.extend({
     // links: function () {
     //   return this.hasMany(Link);
     // },
-    hashPassword: function (password, cb) {
-      bcrypt.genSalt(10, function(err, salt) {
-          bcrypt.hash(password, salt, null, function(err, hash) {
-            cb(hash);
-          });
-        });
-    }//,
+    // hashPassword: function (password, cb) {
+    //   bcrypt.genSalt(10, function(err, salt) {
+    //       bcrypt.hash(password, salt, null, function(err, hash) {
+    //         cb(hash);
+    //       });
+    //     });
+    // }//,
 
     // login: function (req, res) {
     //   var username = req.body.username;
@@ -43,7 +43,7 @@ var User = db.Model.extend({
         //       req.session.token = token;
         //       req.session.user = user.get('id');
 
-        //       // redirect to home after login
+              // redirect to home after login
         //       res.set('Location', '/');
         //       res.redirect('/');
 
